@@ -1,0 +1,6 @@
+App\Domain\Isbn:
+  type: embeddable
+  id:
+    number:
+      type: string
+      id: true

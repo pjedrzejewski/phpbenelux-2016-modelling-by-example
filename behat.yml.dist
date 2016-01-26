@@ -1,0 +1,19 @@
+default:
+  extensions:
+    Behat\MinkExtension:
+      sessions:
+        default:
+          symfony2: ~
+      show_auto: false
+      show_cmd: open %s
+    Behat\Symfony2Extension:
+      kernel:
+        path: AppKernel.php
+  suites:
+    domain:
+      contexts:
+        - DomainContext
+    ui:
+      contexts:
+        - UiContext
+      filters:  { tags: '@critical' }

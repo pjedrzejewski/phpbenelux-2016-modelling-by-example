@@ -1,0 +1,5 @@
+app_library_search:
+  path: /search
+  methods: [GET]
+  defaults:
+    _controller: app.controller.library:searchByIsbnAction

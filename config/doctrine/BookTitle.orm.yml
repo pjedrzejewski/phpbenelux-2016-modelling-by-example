@@ -1,0 +1,6 @@
+App\Domain\BookTitle:
+  type: embeddable
+  fields:
+    title:
+      type: string
+      column: title

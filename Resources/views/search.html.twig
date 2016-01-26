@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <form method="get" action="{{ path('app_library_search') }}">
+        <label for="isbn">ISBN</label>
+        <input type="text" id="isbn" name="isbn" />
+        <input type="submit" value="Search" />
+    </form>
+
+    {% if results.count > 0 %}
+    Found {{ results.count }} result(s).
+    <ul>
+        {% for book in results.books %}
+            <li>{{ book.title }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endblock %}
