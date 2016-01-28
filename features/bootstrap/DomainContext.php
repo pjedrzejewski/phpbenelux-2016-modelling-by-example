@@ -1,26 +1,30 @@
 <?php
 
-use Behat\Behat\Tester\Exception\PendingException;
+use App\Domain\Book;
+use App\Domain\BookTitle;
+use App\Domain\Isbn;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
+use Behat\Behat\Tester\Exception\PendingException;
 
 class DomainContext implements Context, SnippetAcceptingContext
 {
+    private $currentBook;
 
     /**
      * @Given I want to add a new book
      */
     public function iWantToAddANewBook()
     {
-        throw new PendingException();
+        $this->currentBook = null;
     }
 
     /**
-     * @When I set the title to :arg1 and ISBN to :arg2
+     * @When I set the title to :title and ISBN to :isbn
      */
-    public function iSetTheTitleToAndIsbnTo($arg1, $arg2)
+    public function iSetTheTitleToAndIsbnTo($title, $isbn)
     {
-        throw new PendingException();
+        $this->currentBook = Book::withTitleAndIsbn(new BookTitle($title), new Isbn($isbn));
     }
 
     /**
