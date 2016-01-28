@@ -1,8 +1,0 @@
-App\Domain\Book:
-  type: entity
-  embedded:
-    isbn:
-      class: App\Domain\Isbn
-    title:
-      class: App\Domain\BookTitle
-      columnPrefix: false

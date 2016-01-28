@@ -21,23 +21,3 @@ doctrine:
                         prefix: App\Domain
                         dir: "%kernel.root_dir%/config/doctrine"
                         is_bundle: false
-
-services:
-    app.controller.library:
-        class: App\Bundle\Controller\LibraryController
-        arguments:
-            - @app.library
-            - @templating
-
-    app.doctrine.orm.manager.book:
-        alias: doctrine.orm.default_entity_manager
-    app.doctrine.orm.repository.book:
-        class: Doctrine\ORM\EntityRepository
-        factory: [@app.doctrine.orm.manager.book, 'getRepository']
-        arguments: ['App\Domain\Book']
-
-    app.library:
-        class: App\Infrastructure\DoctrineLibrary
-        arguments:
-            - @app.doctrine.orm.manager.book
-            - @app.doctrine.orm.repository.book
