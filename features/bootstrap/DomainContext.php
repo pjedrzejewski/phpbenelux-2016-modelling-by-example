@@ -3,13 +3,20 @@
 use App\Domain\Book;
 use App\Domain\BookTitle;
 use App\Domain\Isbn;
+use App\Infrastructure\InMemoryLibrary;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Tester\Exception\PendingException;
 
 class DomainContext implements Context, SnippetAcceptingContext
 {
+    private $library;
     private $currentBook;
+
+    public function __construct()
+    {
+        $this->library = new InMemoryLibrary();
+    }
 
     /**
      * @Given I want to add a new book
@@ -32,7 +39,9 @@ class DomainContext implements Context, SnippetAcceptingContext
      */
     public function iTryAddThisBookToTheLibrary()
     {
-        throw new PendingException();
+        $this->assertCurrentBookIsDefined();
+
+        $this->library->add($this->currentBook);
     }
 
     /**
@@ -40,7 +49,9 @@ class DomainContext implements Context, SnippetAcceptingContext
      */
     public function thisNewBookShouldBeInTheLibrary()
     {
-        throw new PendingException();
+        $this->assertCurrentBookIsDefined();
+
+        expect($this->library->hasBookWithIsbn($this->currentBook->isbn()))->toBe(true);
     }
 
     /**
@@ -113,5 +124,12 @@ class DomainContext implements Context, SnippetAcceptingContext
     public function iShouldFindASingleBook()
     {
         throw new PendingException();
+    }
+
+    private function assertCurrentBookIsDefined()
+    {
+        if (null === $this->currentBook) {
+            throw new \LogicException('Current book must be defined!');
+        }
     }
 }
