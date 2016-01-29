@@ -55,11 +55,12 @@ class DomainContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @Given a book with ISBN :arg1 and title :arg2 was added to the library
+     * @Given a book with ISBN :isbn and title :title was added to the library
      */
-    public function aBookWithIsbnAndTitleWasAddedToTheLibrary($arg1, $arg2)
+    public function aBookWithIsbnAndTitleWasAddedToTheLibrary($isbn, $title)
     {
-        throw new PendingException();
+        $this->currentBook = Book::withTitleAndIsbn(new BookTitle($title), new Isbn($isbn));
+        $this->library->add($this->currentBook);
     }
 
     /**
@@ -67,7 +68,8 @@ class DomainContext implements Context, SnippetAcceptingContext
      */
     public function iTryToCreateAnotherBookWithTheSameIsbnNumber()
     {
-        throw new PendingException();
+        $this->assertCurrentBookIsDefined();
+        $this->currentBook = Book::withTitleAndIsbn(new BookTitle('Random Title'), $this->currentBook->isbn());
     }
 
     /**
@@ -75,7 +77,10 @@ class DomainContext implements Context, SnippetAcceptingContext
      */
     public function iShouldReceiveAnErrorAboutNonUniqueBook()
     {
-        throw new PendingException();
+        $this->assertCurrentBookIsDefined();
+
+        expect($this->library)->toThrow(\InvalidArgumentException::class)->during('add', array($this->currentBook));
+
     }
 
     /**
