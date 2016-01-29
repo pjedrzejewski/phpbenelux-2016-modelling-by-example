@@ -3,6 +3,7 @@
 use App\Domain\Book;
 use App\Domain\BookTitle;
 use App\Domain\Isbn;
+use App\Domain\SearchResults;
 use App\Infrastructure\InMemoryLibrary;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
@@ -13,10 +14,12 @@ class DomainContext implements Context, SnippetAcceptingContext
     private $library;
     private $currentBook;
     private $isbnToRemove;
+    private $currentSearchResults;
 
     public function __construct()
     {
         $this->library = new InMemoryLibrary();
+        $this->currentSearchResults = SearchResults::asEmpty();
     }
 
     /**
@@ -125,11 +128,11 @@ class DomainContext implements Context, SnippetAcceptingContext
     }
 
     /**
-     * @When I search library by ISBN number :arg1
+     * @When I search library by ISBN number :isbn
      */
-    public function iSearchLibraryByIsbnNumber($arg1)
+    public function iSearchCatalogByIsbnNumber($isbn)
     {
-        throw new PendingException();
+        $this->currentSearchResults = $this->library->searchByIsbn(new Isbn($isbn));
     }
 
     /**
@@ -137,7 +140,9 @@ class DomainContext implements Context, SnippetAcceptingContext
      */
     public function iShouldFindASingleBook()
     {
-        throw new PendingException();
+        if (1 !== $actualCount = $this->currentSearchResults->count()) {
+            throw new \Exception(sprintf('Expected exactly 1 book, but got %d...', $actualCount));
+        }
     }
 
     private function assertCurrentBookIsDefined()

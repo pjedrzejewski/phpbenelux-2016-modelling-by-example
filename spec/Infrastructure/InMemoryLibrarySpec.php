@@ -5,6 +5,7 @@ namespace spec\App\Infrastructure;
 use App\Domain\BookInterface;
 use App\Domain\Isbn;
 use App\Domain\LibraryInterface;
+use App\Domain\SearchResults;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -59,5 +60,20 @@ class InMemoryLibrarySpec extends ObjectBehavior
             ->shouldThrow(new \InvalidArgumentException('Book with ISBN "978-1-56619-909-4" does not exist!'))
             ->duringRemove(new Isbn('978-1-56619-909-4'))
         ;
+    }
+
+    function it_returns_0_results_when_searching_by_isbn_and_empty()
+    {
+        $this->searchByIsbn(new Isbn('978-1-56619-909-4'))->shouldHaveCount(0);
+    }
+
+    function it_returns_exactly_one_result_when_searching_by_exact_isbn_and_it_matches(BookInterface $book)
+    {
+        $isbn = new Isbn('978-1-56619-909-4');
+        $book->isbn()->willReturn($isbn);
+
+        $this->add($book);
+
+        $this->searchByIsbn($isbn)->shouldBeLike(SearchResults::fromArrayOfBooks(array($book->getWrappedObject())));
     }
 }

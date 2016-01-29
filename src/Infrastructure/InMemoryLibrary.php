@@ -2,9 +2,10 @@
 
 namespace App\Infrastructure;
 
-use App\Domain\LibraryInterface;
 use App\Domain\BookInterface;
 use App\Domain\Isbn;
+use App\Domain\LibraryInterface;
+use App\Domain\SearchResults;
 
 class InMemoryLibrary implements LibraryInterface
 {
@@ -33,5 +34,12 @@ class InMemoryLibrary implements LibraryInterface
     public function hasBookWithIsbn(Isbn $isbn)
     {
         return array_key_exists((string) $isbn, $this->books);
+    }
+
+    public function searchByIsbn(Isbn $isbn)
+    {
+        $books = $this->hasBookWithIsbn($isbn) ? array($this->books[(string) $isbn]) : array();
+
+        return SearchResults::fromArrayOfBooks($books);
     }
 }
