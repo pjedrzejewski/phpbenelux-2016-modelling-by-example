@@ -21,6 +21,15 @@ class InMemoryLibrary implements LibraryInterface
         $this->books[(string) $isbn] = $book;
     }
 
+    public function remove(Isbn $isbn)
+    {
+        if (!$this->hasBookWithIsbn($isbn)) {
+            throw new \InvalidArgumentException(sprintf('Book with ISBN "%s" does not exist!', $isbn));
+        }
+
+        unset($this->books[(string) $isbn]);
+    }
+
     public function hasBookWithIsbn(Isbn $isbn)
     {
         return array_key_exists((string) $isbn, $this->books);

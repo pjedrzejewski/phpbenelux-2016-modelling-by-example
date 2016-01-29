@@ -42,4 +42,22 @@ class InMemoryLibrarySpec extends ObjectBehavior
             ->duringAdd($book)
         ;
     }
+
+    function it_removes_book_via_isbn_number(BookInterface $book)
+    {
+        $isbn = new Isbn('978-1-56619-909-4');
+        $book->isbn()->willReturn($isbn);
+
+        $this->add($book);
+        $this->remove($isbn);
+        $this->hasbookWithIsbn($isbn)->shouldReturn(false);
+    }
+
+    function it_throws_exception_if_book_with_given_isbn_does_not_exist()
+    {
+        $this
+            ->shouldThrow(new \InvalidArgumentException('Book with ISBN "978-1-56619-909-4" does not exist!'))
+            ->duringRemove(new Isbn('978-1-56619-909-4'))
+        ;
+    }
 }

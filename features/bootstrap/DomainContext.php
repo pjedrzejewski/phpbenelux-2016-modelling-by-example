@@ -12,6 +12,7 @@ class DomainContext implements Context, SnippetAcceptingContext
 {
     private $library;
     private $currentBook;
+    private $isbnToRemove;
 
     public function __construct()
     {
@@ -88,7 +89,9 @@ class DomainContext implements Context, SnippetAcceptingContext
      */
     public function iTryToRemoveItFromTheLibrary()
     {
-        throw new PendingException();
+        $this->assertCurrentBookIsDefined();
+
+        $this->library->remove($this->currentBook->isbn());
     }
 
     /**
@@ -96,15 +99,17 @@ class DomainContext implements Context, SnippetAcceptingContext
      */
     public function thisBookShouldNoLongerBeInTheLibrary()
     {
-        throw new PendingException();
+        $this->assertCurrentBookIsDefined();
+
+        expect($this->library->hasBookWithIsbn($this->currentBook->isbn()))->toBe(false);
     }
 
     /**
-     * @When I try to remove book with ISBN :arg1
+     * @When I try to remove book with ISBN :isbn
      */
-    public function iTryToRemoveBookWithIsbn($arg1)
+    public function iTryToRemoveBookWithIsbn($isbn)
     {
-        throw new PendingException();
+        $this->isbnToRemove = new Isbn($isbn);
     }
 
     /**
@@ -112,7 +117,11 @@ class DomainContext implements Context, SnippetAcceptingContext
      */
     public function iShouldReceiveAnErrorAboutNonExistentBook()
     {
-        throw new PendingException();
+        if (null === $this->isbnToRemove) {
+            throw new \LogicException();
+        }
+
+        expect($this->library)->toThrow(new \InvalidArgumentException(sprintf('Book with ISBN "%s" does not exist!', $this->isbnToRemove)))->during('remove', array($this->isbnToRemove));
     }
 
     /**
